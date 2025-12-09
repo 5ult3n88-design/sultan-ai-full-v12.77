@@ -1,15 +1,27 @@
 @echo off
-echo 🚀 Starting Sultan AI v12.7 (Live Edition)
+echo ========================================
+echo    Sultan AI Trading Dashboard v12.7
+echo ========================================
+echo.
+
 if not exist ".venv" (
-  python -m venv .venv
+    echo Creating virtual environment...
+    python -m venv .venv
 )
+
 call .venv\Scripts\activate.bat
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-echo 📥 Fetching datasets...
+echo Installing dependencies...
+python -m pip install --upgrade pip --quiet
+pip install -r requirements.txt --quiet
+
+echo.
+echo Fetching latest market data...
 python backend/fetch_data.py
-streamlit run frontend/Home.py
 
-
-
-
+echo.
+echo Starting dashboard...
+echo Opening browser at http://localhost:8501
+start http://localhost:8501
+cd frontend
+streamlit run Home.py --server.headless true
+pause
