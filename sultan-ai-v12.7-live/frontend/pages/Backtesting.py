@@ -6,9 +6,17 @@ from plotly.subplots import make_subplots
 import os
 import sys
 from datetime import datetime, timedelta
+from pathlib import Path
 
-# Add backend to path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'backend'))
+# Add backend to path - works for both local and Streamlit Cloud
+current_file = Path(__file__).resolve()
+pages_dir = current_file.parent
+frontend_dir = pages_dir.parent
+project_dir = frontend_dir.parent
+backend_dir = project_dir / 'backend'
+sys.path.insert(0, str(backend_dir))
+sys.path.insert(0, str(project_dir))
+
 from backtester import Backtester, BacktestResult, quick_backtest, save_backtest_results
 from analytics import calculate_advanced_indicators
 

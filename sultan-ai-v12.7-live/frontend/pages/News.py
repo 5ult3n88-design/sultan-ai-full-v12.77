@@ -2,8 +2,17 @@ import streamlit as st
 import os
 import sys
 from datetime import datetime
+from pathlib import Path
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'backend'))
+# Add backend to path - works for both local and Streamlit Cloud
+current_file = Path(__file__).resolve()
+pages_dir = current_file.parent
+frontend_dir = pages_dir.parent
+project_dir = frontend_dir.parent
+backend_dir = project_dir / 'backend'
+sys.path.insert(0, str(backend_dir))
+sys.path.insert(0, str(project_dir))
+
 from fetch_news import get_news_for_symbol, load_news_cache, save_news_cache
 from analytics import analyze_news_sentiment
 

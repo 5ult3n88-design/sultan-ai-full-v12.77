@@ -7,9 +7,16 @@ import yfinance as yf
 import os
 import sys
 from datetime import datetime, timedelta
+from pathlib import Path
 
-# Add backend to path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'backend'))
+# Add backend to path - works for both local and Streamlit Cloud
+current_file = Path(__file__).resolve()
+frontend_dir = current_file.parent
+project_dir = frontend_dir.parent
+backend_dir = project_dir / 'backend'
+sys.path.insert(0, str(backend_dir))
+sys.path.insert(0, str(project_dir))
+
 from analytics import calculate_advanced_indicators, calculate_strength_score, analyze_news_sentiment
 from ml_model import predict_price_movement, calculate_entry_exit_levels, get_trading_recommendation
 from fetch_news import get_news_for_symbol, load_news_cache, save_news_cache
