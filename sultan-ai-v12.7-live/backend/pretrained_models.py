@@ -211,11 +211,25 @@ def train_forex_model(df, symbol, retrain=False):
 
 def predict_with_pretrained_model(df, symbol):
     """
-    Make predictions using a pre-trained model or fallback to generic training
+    Make predictions using a pre-trained model or fallback to generic training.
+    Prioritizes enhanced models when available.
     """
+    # Try enhanced model first
+    try:
+        from ml_model_enhanced import get_or_train_enhanced_model, predict_with_enhanced_model
+        enhanced_model = get_or_train_enhanced_model(df, symbol)
+        if enhanced_model is not None:
+            result = predict_with_enhanced_model(df, enhanced_model, symbol)
+            if result and result.get('direction') != 'NEUTRAL':
+                return result
+    except ImportError:
+        pass
+    except Exception as e:
+        print(f"Enhanced model error for {symbol}: {e}")
+
     # Try to load pre-trained model
     model_data = load_pretrained_model(symbol)
-    
+
     if model_data is None:
         # Fallback to on-the-fly training
         model_data = train_forex_model(df, symbol)

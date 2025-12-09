@@ -374,7 +374,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Navigation buttons using columns
-nav_col1, nav_col2, nav_col3, nav_col4, nav_col5 = st.columns(5)
+nav_col1, nav_col2, nav_col3, nav_col4, nav_col5, nav_col6 = st.columns(6)
 
 with nav_col1:
     if st.button("🏠 Home", use_container_width=True, type="secondary"):
@@ -389,11 +389,15 @@ with nav_col3:
         st.switch_page("pages/Advanced_Charts.py")
 
 with nav_col4:
+    if st.button("📊 Backtesting", use_container_width=True, type="secondary"):
+        st.switch_page("pages/Backtesting.py")
+
+with nav_col5:
     if st.button("📰 News", use_container_width=True, type="secondary"):
         st.switch_page("pages/News.py")
 
-with nav_col5:
-    if st.button("📊 Methodology", use_container_width=True, type="secondary"):
+with nav_col6:
+    if st.button("📋 Methodology", use_container_width=True, type="secondary"):
         st.switch_page("pages/Methodology.py")
 
 st.markdown("<br>", unsafe_allow_html=True)
