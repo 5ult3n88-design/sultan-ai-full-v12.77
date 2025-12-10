@@ -1,16 +1,26 @@
 import requests
-import feedparser
+try:
+    import feedparser
+    FEEDPARSER_AVAILABLE = True
+except ImportError:
+    FEEDPARSER_AVAILABLE = False
+
 from datetime import datetime, timedelta
 import os
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 import json
-
-load_dotenv()
 
 def fetch_rss_news(query="finance", max_items=20):
     """Fetch news from RSS feeds (free, no API key required)"""
+    if not FEEDPARSER_AVAILABLE:
+        return []  # Return empty list if feedparser not available
+
     news_items = []
-    
+
     # Financial news RSS feeds
     rss_feeds = [
         f"https://feeds.finance.yahoo.com/rss/2.0/headline?s={query}&region=US&lang=en-US",
@@ -19,7 +29,7 @@ def fetch_rss_news(query="finance", max_items=20):
         "https://rss.cnn.com/rss/money_latest.rss",
         "https://feeds.bloomberg.com/markets/news.rss"
     ]
-    
+
     for feed_url in rss_feeds:
         try:
             feed = feedparser.parse(feed_url)
@@ -34,7 +44,7 @@ def fetch_rss_news(query="finance", max_items=20):
         except Exception as e:
             print(f"⚠️ Error fetching RSS feed {feed_url}: {e}")
             continue
-    
+
     # Remove duplicates based on title
     seen_titles = set()
     unique_news = []
@@ -42,7 +52,7 @@ def fetch_rss_news(query="finance", max_items=20):
         if item['title'] not in seen_titles:
             seen_titles.add(item['title'])
             unique_news.append(item)
-    
+
     return unique_news[:max_items]
 
 def fetch_yahoo_news(query="forex OR stock OR trading", max_items=10):

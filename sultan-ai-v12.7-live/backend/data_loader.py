@@ -86,14 +86,36 @@ def save_csv_clean(df, path):
         if not isinstance(df.index, pd.DatetimeIndex):
             df.index = pd.to_datetime(df.index, errors='coerce')
             df = df[df.index.notna()]
-        
+
         # Remove any index name to avoid header issues
         df.index.name = None
-        
+
         # Save
         df.to_csv(path, index=True)
         return True
     except Exception as e:
         print(f"Error saving CSV: {e}")
         return False
+
+def load_symbol_data(symbol):
+    """Load data for a specific symbol"""
+    # Map symbol to filename
+    symbol_clean = symbol.replace('=', '').replace('/', '').replace('-', '-')
+
+    # Try different filename patterns
+    data_dir = os.path.join(os.path.dirname(__file__), '..', 'data')
+
+    possible_files = [
+        f"{data_dir}/{symbol_clean}_data.csv",
+        f"{data_dir}/{symbol}_data.csv",
+        f"{data_dir}/{symbol.replace('=X', 'X')}_data.csv",
+    ]
+
+    for filepath in possible_files:
+        if os.path.exists(filepath):
+            df = load_csv_robust(filepath)
+            if df is not None and len(df) > 0:
+                return df
+
+    return None
 
