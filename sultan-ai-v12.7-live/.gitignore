@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# IDE
+# .vscode/ - Keeping VS Code configs for project setup
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data (keep structure but ignore large files if needed)
+# Uncomment if data files get too large:
+# data/*.csv
+
+# Robot state files (optional - uncomment to not track)
+# data/trading_robot_state.json
+# data/trading_robot_config.json
+
+# Logs
+*.log
