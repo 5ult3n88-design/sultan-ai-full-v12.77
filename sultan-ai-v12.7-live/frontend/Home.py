@@ -243,19 +243,42 @@ col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     selected_symbol = st.selectbox("Select Trading Pair", FOREX_PAIRS, index=0, label_visibility="collapsed")
 
-# Fetch data from Yahoo Finance
-@st.cache_data(ttl=300)
+# Auto-refresh every 60 seconds
+import time
+if 'last_refresh' not in st.session_state:
+    st.session_state.last_refresh = time.time()
+
+# Refresh button
+col_r1, col_r2, col_r3 = st.columns([1, 1, 1])
+with col_r2:
+    if st.button("🔄 Refresh Live Data", use_container_width=True):
+        st.cache_data.clear()
+        st.session_state.last_refresh = time.time()
+        st.rerun()
+
+# Auto-refresh check (every 60 seconds)
+if time.time() - st.session_state.last_refresh > 60:
+    st.session_state.last_refresh = time.time()
+    st.rerun()
+
+# Fetch REAL-TIME data from Yahoo Finance - NO CACHE for live data
 def fetch_data(symbol):
     try:
         ticker = YAHOO_MAP.get(symbol, f"{symbol}=X")
-        data = yf.download(ticker, period="60d", interval="1h", progress=False)
-        if data.empty:
+        # Get most recent data - 5 days with 15min intervals for real-time feel
+        data = yf.download(ticker, period="5d", interval="15m", progress=False)
+        if data.empty or len(data) < 10:
+            # Fallback to hourly
+            data = yf.download(ticker, period="7d", interval="1h", progress=False)
+        if data.empty or len(data) < 10:
+            # Final fallback
             data = yf.download(ticker, period="30d", interval="1d", progress=False)
         return data
-    except:
+    except Exception as e:
+        st.error(f"Error fetching data: {e}")
         return pd.DataFrame()
 
-with st.spinner(f"Loading {selected_symbol}..."):
+with st.spinner(f"Loading LIVE data for {selected_symbol}..."):
     df = fetch_data(selected_symbol)
 
 if df.empty:
@@ -265,6 +288,16 @@ if df.empty:
 # Flatten multi-index columns if present
 if isinstance(df.columns, pd.MultiIndex):
     df.columns = df.columns.get_level_values(0)
+
+# Show last data timestamp
+last_data_time = df.index[-1]
+now = datetime.now()
+st.markdown(f"""
+<div style="text-align: center; color: #64ffda; font-size: 0.85rem; margin: 0.5rem 0;">
+    📡 Latest Data: <strong>{last_data_time.strftime('%Y-%m-%d %H:%M')}</strong> |
+    🕐 Last Refresh: <strong>{now.strftime('%H:%M:%S')}</strong>
+</div>
+""", unsafe_allow_html=True)
 
 # Calculate indicators
 def calculate_indicators(df):
