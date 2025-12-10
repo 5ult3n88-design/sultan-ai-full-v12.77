@@ -1,0 +1,65 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "🤖 Run Trading Robot Demo",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/demo_robot.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "🧪 Test Robot (Single Cycle)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/run_trading_robot.py",
+            "args": [
+                "--test",
+                "--symbols", "EURUSD=X", "AAPL", "GOOGL"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "🚀 Run Robot (5 Cycles)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/run_trading_robot.py",
+            "args": [
+                "--cycles", "5",
+                "--confidence", "65",
+                "--symbols", "EURUSD=X", "AAPL", "GOOGL", "MSFT"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "🔧 Generate Demo Data",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/generate_demo_data.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "📊 Start Streamlit Dashboard",
+            "type": "python",
+            "request": "launch",
+            "module": "streamlit",
+            "args": [
+                "run",
+                "${workspaceFolder}/frontend/Home.py",
+                "--server.port=8501",
+                "--server.headless=true"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

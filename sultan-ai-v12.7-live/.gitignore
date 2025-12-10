@@ -14,7 +14,7 @@ venv/
 ENV/
 
 # IDE
-.vscode/
+# .vscode/ - Keeping VS Code configs for project setup
 .idea/
 *.swp
 *.swo
